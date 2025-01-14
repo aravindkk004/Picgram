@@ -1,13 +1,32 @@
 "use client";
-import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Loader from "../Loader";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const EditProfile = () => {
-  const path = usePathname();
+const EditProfile = ({ user }) => {
+  const router = useRouter();
   const fileInputRef = useRef(null);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
-  const [imageSrc, setImageSrc] = useState("/icons/profile-placeholder.svg");
+  const [imageSrc, setImageSrc] = useState(
+    user?.profileImg || "/icons/profile-placeholder.svg"
+  );
+
+  const [name, setName] = useState(user?.name || "");
+  const [username, setUserName] = useState(user?.username || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [bio, setBio] = useState(user?.bio || "");
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setUserName(user.username || "");
+      setEmail(user.email || "");
+      setBio(user.bio || "");
+      setImageSrc(user.profileImg || "/icons/profile-placeholder.svg");
+    }
+  }, [user]);
 
   const handleChoosePhotoClick = () => {
     if (fileInputRef.current) {
@@ -16,13 +35,37 @@ const EditProfile = () => {
   };
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0]; 
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImageSrc(e.target.result);
       };
-      reader.readAsDataURL(file); 
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    setIsLoadingUpdate(true);
+    try {
+      const response = await axios.put("/api/update-user", {
+        name,
+        username,
+        email,
+        bio,
+        profileImg: imageSrc,
+      });
+      if (response.status === 200) {
+        toast.success("Profile updated successfully");
+        router.refresh();
+      } else {
+        toast.error("Error while updating your profile");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      setIsLoadingUpdate(false);
     }
   };
 
@@ -36,7 +79,10 @@ const EditProfile = () => {
           </h2>
         </div>
 
-        <form className="flex flex-col gap-7 w-full max-w-5xl">
+        <form
+          className="flex flex-col gap-7 w-full max-w-5xl"
+          onSubmit={updateProfile}
+        >
           <div className="flex items-center gap-3">
             <div>
               <img
@@ -48,9 +94,9 @@ const EditProfile = () => {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".jpg, .png, .jpeg"
+              accept="image/*"
               className="hidden"
-              onChange={handleFileChange} 
+              onChange={handleFileChange}
             />
             <p
               className="text-primary-600 cursor-pointer"
@@ -65,6 +111,8 @@ const EditProfile = () => {
               type="text"
               placeholder="Eg: Aravind"
               className="w-full bg-dark-4 px-3 py-3 rounded-md text-light-1 mt-2"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="w-full">
@@ -73,14 +121,18 @@ const EditProfile = () => {
               type="text"
               placeholder="Eg: @aravindkk"
               className="w-full bg-dark-4 px-3 py-3 rounded-md text-light-1 mt-2"
+              value={username}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </div>
           <div className="w-full">
             <label className="text-light-1">Email</label>
             <input
-              type="text"
+              type="email"
               placeholder="Eg: aravind@gmail.com"
               className="w-full bg-dark-4 px-3 py-3 rounded-md text-light-1 mt-2"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
@@ -88,6 +140,8 @@ const EditProfile = () => {
             <textarea
               placeholder="Your Bio..."
               className="w-full h-[150px] bg-dark-4 px-3 py-3 rounded-md resize-none text-light-1 mt-2"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
             ></textarea>
           </div>
 

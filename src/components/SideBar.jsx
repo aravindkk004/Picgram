@@ -1,13 +1,17 @@
 "use client";
 import { sidebarLinks } from "@/constants";
-import { useUser } from "@clerk/nextjs";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-const SideBar = () => {
-  const { user } = useUser();
+const SideBar = ({user}) => {
+  const { data: session, status } = useSession();
   const path = usePathname();
-
+  const router = useRouter();
+  const handleSignOut = () => {
+    signOut();
+    router.push("/login");
+  };
   return (
     <>
       <style jsx>{`
@@ -22,18 +26,16 @@ const SideBar = () => {
           Picgram
         </p>
       </div>
-      <Link href="profile" className="cursor-pointer">
+      <Link href={`/profile/${session?.user?.id}`} className="cursor-pointer">
         <div className="flex items-center gap-3 px-4 lg:ml-4 ml-2 mt-7">
           <img
-            src={user?.imageUrl}
+            src={user?.profileImg || "/icons/profile-placeholder.svg"}
             alt="Profile"
             className="lg:w-10 lg:h-10 w-8 h-8 rounded-full"
           />
           <div className="lg:block hidden">
-            <p className="text-light-1 text-lg font-semibold">
-              {user?.firstName || "Guest"}
-            </p>
-            <p className="text-light-3">@{user?.username || "No username"}</p>
+            <p className="text-light-1 text-lg font-semibold">{user?.name}</p>
+            <p className="text-light-3">@{user?.username}</p>
           </div>
         </div>
       </Link>
@@ -58,7 +60,7 @@ const SideBar = () => {
             </div>
           </Link>
         ))}
-        <div className="flex items-center gap-5 p-3 mx-3 rounded-md my-5 absolute bottom-4 cursor-pointer">
+        <div className="flex items-center gap-5 p-3 mx-3 rounded-md my-5 absolute bottom-4 cursor-pointer" onClick={handleSignOut}>
           <img src="/icons/logout.svg" alt="Logout" className="text-white" />
           <p className="text-light-1 lg:block hidden">Logout</p>
         </div>

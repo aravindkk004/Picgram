@@ -2,7 +2,7 @@ import "./globals.css";
 import { Outfit } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { AuthProvider } from "./providers";
 
 const inter = Outfit({ subsets: ["latin"] });
 
@@ -13,10 +13,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          {children}
+        <AuthProvider>{children}</AuthProvider>
           <ToastContainer
             position="top-right"
             autoClose={3000}
@@ -31,6 +30,5 @@ export default function RootLayout({ children }) {
           />
         </body>
       </html>
-    </ClerkProvider>
   );
 }
