@@ -6,7 +6,6 @@ import AllUsers from "@/components/all-users/AllUsers";
 import { userDetails } from "@/constants/getUserDetails";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 export default function Home() {
   const { data: session } = useSession();

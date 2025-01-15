@@ -5,15 +5,18 @@ import TopNav from "@/components/TopNav";
 import Profile from "@/components/profile/Profile";
 import { userDetails } from "@/constants/getUserDetails";
 import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
   const [user, setUser] = useState({});
+  const params = useParams();
+  const userId = params?.userId;
   useEffect(() => {
     const fetchUserDetails = async () => {
       if (session?.user?.id) {
-        const userResult = await userDetails(session?.user?.id);
+        const userResult = await userDetails(userId);
         if (userResult && typeof userResult !== "string") {
           setUser(userResult);
         }

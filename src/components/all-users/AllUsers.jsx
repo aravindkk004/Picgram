@@ -29,6 +29,7 @@ const AllUsers = () => {
   const filteredUsers = allUsers?.filter(
     (user) => user._id !== session?.user?.id
   );
+  const currentUser = allUsers?.find((user) => user._id === session?.user?.id);
   return (
     <div className="flex flex-col flex-1 items-center gap-10 py-10 px-5 md:px-8 lg:p-14">
       <div className="max-w-5xl flex flex-col items-start w-full gap-6 md:gap-9">
@@ -50,7 +51,7 @@ const AllUsers = () => {
           <ul className="w-full grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7 max-w-5xl">
             {filteredUsers?.map((user, index) => (
               <li className="flex-1 min-w-[200px] w-full " key={index}>
-                <UserCard userDetail={user} />
+                <UserCard userDetail={user} currentUser={currentUser} />
               </li>
             ))}
           </ul>

@@ -37,24 +37,25 @@ const MainBar = () => {
           const postsWithUserDetails = user.posts.map(post => ({
             ...post,
             user: {
-              name: user.name, 
-              id: user.id,  
-              img: user.profileImg  
+              name: user.name,
+              id: user._id,
+              img: user.profileImg,
             },
           }));
           return [...acc, ...postsWithUserDetails];
         }
         return acc;
       }, []);
-
+  
       if (allPosts.length > 0) {
         const sortedPosts = allPosts.sort(
-          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        setPosts(sortedPosts.reverse());
+        setPosts(sortedPosts);
       }
     }
   }, [allUsers]);
+  
 
   return (
     <div className="flex flex-col items-center">

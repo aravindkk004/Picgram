@@ -33,9 +33,9 @@ const Profile = ({ user }) => {
               {user?.bio}
             </p>
             <div className="flex gap-8 mt-3 items-center justify-center xl:justify-start flex-wrap z-20">
-              <StatBlock value={5} label="Posts" />
-              <StatBlock value={20} label="Followers" />
-              <StatBlock value={20} label="Following" />
+              <StatBlock value={user?.posts?.length || 0} label="Posts" />
+              <StatBlock value={user?.followedBy?.length || 0} label="Followers" />
+              <StatBlock value={user?.following?.length || 0} label="Following" />
             </div>
           </div>
 

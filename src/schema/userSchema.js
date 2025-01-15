@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   location: { type: String },
-  tags: [{type: String}],
+  tags: [{ type: String }],
   likes: [
     {
       type: Object,
@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
     posts: [postSchema],
     savedPosts: [
       {
-        type: Object,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
@@ -61,13 +61,13 @@ const userSchema = new mongoose.Schema(
     ],
     following: [
       {
-        type: Object,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-    followedby: [
+    followedBy: [
       {
-        type: Object,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
