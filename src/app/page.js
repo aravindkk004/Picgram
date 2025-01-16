@@ -49,10 +49,10 @@ export default function Home() {
           <SideBar user={user} />
         </div>
         <div className="lg:w-[56%] md:w-[70%] w-full bg-dark-1 h-screen overflow-y-scroll scrollbar-custom pb-[3%]">
-          {allUsers ? <MainBar userDetails={allUsers} /> : <Loader />}
+          <MainBar userDetails={allUsers} currUser={user}/>
         </div>
         <div className="lg:w-[27%] md:w-[20%] md:block hidden bg-dark-2 h-screen">
-          {allUsers ? <Creators userDetails={allUsers} /> : <Loader />}
+          {allUsers ? <Creators userDetails={allUsers} /> : <div className="my-[40px]"><Loader /></div>}
         </div>
       </div>
       <div className="md:hidden flex bg-dark-3 w-full absolute bottom-0">

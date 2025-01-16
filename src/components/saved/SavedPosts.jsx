@@ -20,8 +20,6 @@ const SavedPosts = () => {
       {/* <Loader /> */}
 
       <ul className="w-full flex justify-center max-w-5xl gap-9">
-        {/* <p className="text-light-4">No available posts</p> */}
-
         <GridPostList showStats={false} />
       </ul>
     </div>

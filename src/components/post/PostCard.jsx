@@ -3,7 +3,7 @@ import PostStats from "./PostStats";
 import { formatDateString } from "@/libs/utils";
 import { useSession } from "next-auth/react";
 
-const PostCard = ({ post, user }) => {
+const PostCard = ({ post, user, currUser }) => {
   const { data: session } = useSession();
   return (
     <div className="bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm">
@@ -13,7 +13,7 @@ const PostCard = ({ post, user }) => {
             <img
               src={user?.img || "/icons/profile-placeholder.svg"}
               alt="creator"
-              className="w-12 lg:h-12 rounded-full"
+              className="w-12 h-12 rounded-full"
             />
           </Link>
 
@@ -59,7 +59,7 @@ const PostCard = ({ post, user }) => {
       />
       {/* </Link> */}
 
-      <PostStats />
+      <PostStats currUser={currUser} post={post} user={user}/>
     </div>
   );
 };

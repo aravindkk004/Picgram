@@ -48,17 +48,8 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     posts: [postSchema],
-    savedPosts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    likedPosts: [
-      {
-        type: Object,
-      },
-    ],
+    savedPosts: [{ type: Object }],
+    likedPosts: [{ type: Object }],
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -1,6 +1,8 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import GridPostList from "../saved/GridPostList";
+import { useEffect, useState } from "react";
 
 const StatBlock = ({ value, label }) => (
   <div className="flex items-center gap-2">
@@ -9,10 +11,14 @@ const StatBlock = ({ value, label }) => (
   </div>
 );
 
-const Profile = ({ user }) => {
+const Profile = ({ user, currUser }) => {
   const { data: session } = useSession();
+  const [followedBy, setFollowedBy] = useState(false);
+  useEffect(() => {
+    setFollowedBy(currUser?.following?.includes(user._id));
+  }, [currUser, user]);
   return (
-    <div className="flex flex-col items-center flex-1 gap-10 overflow-y-scroll py-10 px-5 md:p-14 scrollbar-custom">
+    <div className="flex flex-col items-center flex-1 gap-10 overflow-y-scroll py-10 px-5 md:p-14 scrollbar-custom md:mb-0 mb-[40%]">
       <div className="flex items-center md:mb-4 xl:items-start gap-8 flex-col xl:flex-row relative max-w-5xl w-full">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <img
@@ -34,13 +40,19 @@ const Profile = ({ user }) => {
             </p>
             <div className="flex gap-8 mt-3 items-center justify-center xl:justify-start flex-wrap z-20">
               <StatBlock value={user?.posts?.length || 0} label="Posts" />
-              <StatBlock value={user?.followedBy?.length || 0} label="Followers" />
-              <StatBlock value={user?.following?.length || 0} label="Following" />
+              <StatBlock
+                value={user?.followedBy?.length || 0}
+                label="Followers"
+              />
+              <StatBlock
+                value={user?.following?.length || 0}
+                label="Following"
+              />
             </div>
           </div>
 
           <div className="flex justify-center gap-4">
-            {user?._id == session?.user?.id && (
+            {user?._id == session?.user?.id ? (
               <div>
                 <Link
                   href={`/profile/edit-profile/${session?.user?.id}`}
@@ -57,14 +69,17 @@ const Profile = ({ user }) => {
                   </p>
                 </Link>
               </div>
-            )}
-            {!user?._id == session?.user?.id && (
+            ) : (
               <div>
                 <button
                   type="button"
-                  className="px-8 text-light-1 bg-primary-500 py-3 rounded-md"
+                  className={`px-5 py-2 rounded-md text-light-1 ${
+                    followedBy ? "bg-dark-4" : "bg-primary-600"
+                  }`}
+                  // onClick={followUser}
+                  // disabled={followedBy}
                 >
-                  Follow
+                  {followedBy ? "Following" : "Follow"}
                 </button>
               </div>
             )}
@@ -80,25 +95,28 @@ const Profile = ({ user }) => {
           <img src={"/icons/posts.svg"} alt="posts" width={20} height={20} />
           Posts
         </Link>
-        <Link
-          href="#"
-          className={`flex items-center justify-center gap-3 py-4 w-48 bg-dark-2  transition flex-1 xl:flex-initial rounded-r-lg text-light-2`}
-        >
-          <img src={"/icons/like.svg"} alt="like" width={20} height={20} />
-          Liked Posts
-        </Link>
-      </div>
-
-      {/* <Routes>
-        <Route
-          index
-          element={<GridPostList posts={currentUser.posts} showUser={false} />}
-        />
-        {currentUser.$id === user.id && (
-          <Route path="/liked-posts" element={<LikedPosts />} />
+        {session?.user.id == user?._id && (
+          <Link
+            href="#"
+            className={`flex items-center justify-center gap-3 py-4 w-48 bg-dark-2  transition flex-1 xl:flex-initial rounded-r-lg text-light-2`}
+          >
+            <img src={"/icons/like.svg"} alt="like" width={20} height={20} />
+            Liked Posts
+          </Link>
         )}
-      </Routes>
-      <Outlet /> */}
+      </div>
+      <div>
+        <ul className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-7 max-w-5xl">
+          {user?.posts?.map((post, index) => (
+            <GridPostList
+              posts={post}
+              key={index}
+              user={user}
+              currUser={currUser}
+            />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

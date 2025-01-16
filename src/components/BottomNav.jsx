@@ -14,7 +14,7 @@ const BottomNav = () => {
             brightness(0%);
         }
       `}</style>
-      <div className="flex justify-evenly py-4 w-full">
+      <div className="flex justify-evenly py-2 w-full">
         {bottombarLinks.map((links, index) => (
           <Link href={links.route} key={index}>
             <div
@@ -26,11 +26,11 @@ const BottomNav = () => {
               <img
                 src={links.imgURL}
                 alt={links.label}
-                className={`${path === links.route ? "filter-white" : ""}`}
+                className={`${path === links.route ? "filter-white" : ""} h-[20px] w-[20px]`}
               />
               <p
                 className={`${
-                  path === links.route ? "text-light-1" : "text-light-4"
+                  path === links.route ? "text-light-1" : "text-light-4 text-xs"
                 }`}
               >
                 {links.label}

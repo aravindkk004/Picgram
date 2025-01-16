@@ -1,24 +1,72 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const PostStats = () => {
+const PostStats = ({ currUser, post, user }) => {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setLiked(currUser?.likedPosts?.some((item) => item.postId === post._id));
+    setSaved(currUser?.savedPosts?.some((item) => item.postId === post._id));
+    setLikeCount(post?.likes?.length);
+  }, [post, user, currUser]);
+
+  const likePost = async () => {
+    setLiked(true);
+    setLikeCount(likeCount + 1);
+    try {
+      const resp = await axios.post("/api/post/like", {
+        currentUserId: currUser?._id,
+        postId: post._id,
+        userId: user?.id,
+      });
+      if (resp.status == 200) {
+        setLiked(true);
+      } else {
+        setLiked(false);
+      }
+    } catch (error) {
+      toast.error("Error while liking");
+      setLiked(false);
+    }
+  };
+
+  const savePost = async () => {
+    setSaved(true);
+    try {
+      const resp = await axios.post("/api/post/save", {
+        currentUserId: currUser?._id,
+        postId: post._id,
+        userId: user?.id,
+      });
+      if (resp.status == 200) {
+        setSaved(true);
+      }
+    } catch (error) {
+      toast.error("Error while saving");
+      setSaved(false);
+    }
+  };
   return (
-    <div
-      className={`flex justify-between items-center z-20`}
-    >
-      <div className="flex gap-2 mr-5">
+    <div className={`flex justify-between items-center z-20`}>
+      <div className="flex gap-2 mr-5" onClick={likePost}>
         <img
-          src="/icons/liked.svg"
+          src={liked ? "/icons/liked.svg" : "/icons/like.svg"}
           alt="like"
           width={20}
           height={20}
           className="cursor-pointer"
         />
-        <p className="small-medium lg:base-medium text-light-1">200</p>
+        <p className="small-medium lg:base-medium text-light-1">
+          {likeCount || 0}
+        </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2" onClick={savePost}>
         <img
-          src={"/icons/saved.svg"}
+          src={saved ? "/icons/saved.svg" : "/icons/save.svg"}
           alt="share"
           width={20}
           height={20}

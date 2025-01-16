@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const { data: session } = useSession();
   const [user, setUser] = useState({});
+  const [currUser, setCurrUser] = useState({})
   const params = useParams();
   const userId = params?.userId;
   useEffect(() => {
@@ -23,6 +24,16 @@ export default function Home() {
       }
     };
     fetchUserDetails();
+
+    const fetchCurrUser = async () => {
+      if (session?.user?.id) {
+        const userResult = await userDetails(session?.user?.id);
+        if (userResult && typeof userResult !== "string") {
+          setCurrUser(userResult);
+        }
+      }
+    }
+    fetchCurrUser(); 
   }, [session]);
   return (
     <div>
@@ -34,7 +45,7 @@ export default function Home() {
           <SideBar user={user}/>
         </div>
         <div className="lg:w-[83%] md:w-[90%] w-full bg-dark-1 h-screen overflow-y-scroll scrollbar-custom">
-          <Profile user={user}/>
+          <Profile user={user} currUser={currUser}/>
         </div>
       </div>
       <div className="md:hidden flex bg-dark-3 w-full absolute bottom-0">
