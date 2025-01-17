@@ -8,9 +8,13 @@ const PostStats = ({ currUser, post, user }) => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    setLiked(currUser?.likedPosts?.some((item) => item.postId === post._id));
-    setSaved(currUser?.savedPosts?.some((item) => item.postId === post._id));
-    setLikeCount(post?.likes?.length);
+    const postId = post?._id || post?._doc?._id;
+    console.log(postId)
+    console.log(currUser?.likedPosts?.some((item) => item.postId === postId))
+    console.log(currUser?.savedPosts?.some((item) => item.postId === postId))
+    setLiked(currUser?.likedPosts?.some((item) => item.postId === postId));
+    setSaved(currUser?.savedPosts?.some((item) => item.postId === postId));
+    setLikeCount(post?.likes?.length || post?._doc?.likes.length);
   }, [post, user, currUser]);
 
   const likePost = async () => {

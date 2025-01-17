@@ -10,7 +10,7 @@ const GridPostList = ({ posts, user, currUser }) => {
         className="flex rounded-[24px] border border-dark-4 overflow-hidden cursor-pointer w-full h-full"
       >
         <img
-          src={posts?.imgUrl || "/icons/profile-placeholder.svg"}
+          src={posts?._doc?.imgUrl || "/icons/profile-placeholder.svg"}
           alt="post"
           className="h-full w-full object-cover"
         />
@@ -25,7 +25,7 @@ const GridPostList = ({ posts, user, currUser }) => {
           />
           <p className="line-clamp-1 text-light-1">{user?.name}</p>
         </div>
-        <PostStats currUser={currUser}/>
+        <PostStats currUser={currUser} user={user} post={posts} />
       </div>
     </li>
   );
